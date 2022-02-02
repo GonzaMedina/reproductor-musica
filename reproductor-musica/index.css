@@ -1,0 +1,133 @@
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #2B3137;
+}
+.container{
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    border-radius: 25px;
+    background-color: #F6F7F8;
+    transition-property: top,left,width,height;
+    transition-duration: 0.1s;
+    border: 2px solid #888;
+}
+.cover{
+    position: absolute;
+    top: 10%;
+    left: -10%;
+    width: 60%;
+    height: 80%;
+    background: linear-gradient(45deg,blue,pink);
+    border-radius: 25px;
+    transition-property: top,left,width,height;
+    transition-duration: 1s;
+    overflow: hidden;
+}
+canvas{
+    width: 100%;
+    height: 100%;
+    border-color: rgba(0,0,0,0.4);
+}
+.controls{
+    position: absolute;
+    top: 45%;
+    right: 10%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 30%;
+    height: 30%;
+    transition-property: top,left,width,height;
+    transition-duration: 1s;
+}
+.controls button{
+    color: black;
+    border-style: none;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+button:focus{
+    outline: none;
+    cursor: pointer;
+}
+button:hover{
+    color: #4e4c4c;
+    cursor: pointer;
+}
+button:active{
+    font-size: 2.3rem;
+}
+
+#progress{
+    position:absolute;
+    top:50%;
+    right:10%;
+    background-color:#2B3137;
+    border-radius: 10px;
+    cursor: pointer;
+    height:4px;
+    width:30%;
+}
+
+#progressbar{
+    background-color:#f00;
+    width: 0;
+    height:100%;
+    border-radius:5px;
+    transition:width 0.1s linear;
+}
+
+@media screen and (max-width: 600px){
+    .contianer{
+        width: 60%;
+        height: 90%;
+        top: 5%;
+        left: 20%;
+    }
+    .cover{
+        top: -10%;
+        left: 10%;
+        height: 60%;
+        width: 80%;
+    }
+    .controls{
+        top: 55%;
+        margin-top: 20px;
+        left: 10%;
+        width: 80%;
+    }
+    #progress{
+        top: 53%;
+        left:10%;
+        width: 80%;
+    }
+
+}
+.cover button{
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    font-size: 2rem;
+    background-color: transparent;
+    border-style: none;
+    cursor: pointer;
+    text-align: center;
+    z-index: 8;
+}
+.cover div{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-color:  rgba(0,0,0,0.6);
+    transition: 1s ease-in-out;
+}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+    <head>
+     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
+     <link rel="stylesheet" href="index.css">
+    </head>
+    <body>
+        <div class="container" id="player">
+            <div class="cover">
+                <canvas id='canvas'>
+                    
+                </canvas>
+            </div>
+            <div id="progress">
+                <div id="progressbar"></div>
+            </div>
+            <audio src="" id="aux" crossorigin="anonymous"></audio>
+            <div class="controls">
+                <button id="prev"><span class="fa fa-backward"></span></button>
+                <button id="playToggle">
+                    <span id="pl_pa" class="fa fa-stop"></span>
+                </button>
+                <button id="next"><span class="fa fa-forward"></span></button>
+            </div>
+           
+        </div>
+        <script>
+        "use strict"
+            const container = document.getElementById('player');
+const pl_pa = document.getElementById ('pl_pa');
+
+const audio = document.getElementById('aux');// https://dl.dropbox.com/s/x6f49cu1rdqnngu/Let%20Me%20Love%20You.
+
+const prevBtn = document.getElementById('prev');
+
+const progressbar = document.getElementById('progressbar');
+
+const nextBtn = document.getElementById('next');
+
+const playBtn = document.getElementById('playToggle');
+
+const progressCon = document.getElementById('progress');
+
+const canvas = document.getElementById('canvas');
+
+//const artist = document.getElementById()
+
+    document.addEventListener("DOMContentLoaded",function (){
+        //songs to play
+        var songs =['https://dl.dropbox.com/s/x6f49cu1rdqnngu/Let%20Me%20Love%20You.mp3?dl=0','https://dl.dropbox.com/s/x6f49cu1rdqnngu/Let%20Me%20Love%20You.mp3?dl=0','https://dl.dropbox.com/s/e5y42cc90ugx09t/Believer.mp3?dl=0'];
+
+        //Keeps track of songs
+        var songIndex = 0;
+        var currenTime,duration;
+        var c;
+        var analyser;
+        var bufferLen;
+        var source;
+        var fbc_arr;
+        var bar_x, bar_width, bar_height;
+        var current_Song;
+        //Load song details to DOM
+        loadSong(songs[songIndex]);
+
+        //Update song
+        function loadSong(song){
+            
+            audio.src = song;
+        }
+
+        //Play song
+        function playSong(){
+            container.classList.add('play');
+            pl_pa.classList.remove('fa-stop');
+            pl_pa.classList.add('fa-play');
+            play();
+        }
+        function play(){
+            audio.play();
+            initVisualiser();
+        
+        }
+        //Puase song 
+        function pauseSong(){
+            container.classList.remove('play');
+            pl_pa.classList.remove('fa-play');
+            pl_pa.classList.add('fa-stop');
+        
+            audio.pause();
+        }
+
+        //Next song
+        function nextSong() {
+            audio.src = ""
+            songIndex++;
+            if (songIndex > songs.length-1) {
+                songIndex = 0;
+            }
+        
+            loadSong(songs[songIndex])
+        
+            play();
+        }
+
+        //Prev song
+        function prevSong() {
+            audio.src = ""
+            songIndex--;
+            if (songIndex > 0) {
+                songIndex = songs.length - 1;
+            }
+            loadSong(songs[songIndex])
+        
+            play();
+        }
+        //visualiser
+        function initVisualiser() {
+            c = canvas.getContext('2d');
+            var context = new AudioContext();
+            let grd = c.createLinearGradient(0, canvas.height, 0, canvas.height / 1.3);
+            grd.addColorStop(0, "#00008B");
+            grd.addColorStop(0.5, '#FF00FF');
+            grd.addColorStop(0.9, '#FF0000');
+            c.fillStyle = grd;
+            analyser = context.createAnalyser();
+            source = context.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(context.destination);
+            analyser.fftSize = 1024;
+            bufferLen = analyser.frequencyBinCount
+            fbc_arr = new Uint8Array(bufferLen);
+            frameLoop();
+        }
+
+        function frameLoop() {
+            window.requestAnimationFrame(frameLoop);
+            analyser.getByteFrequencyData(fbc_arr);
+            c.clearRect(0, 0, canvas.width, canvas.height);
+
+            bar_x = 0;
+            bar_width = parseInt((canvas.width / bufferLen) * 2.5);
+            for (let i = 0; i < bufferLen; i++) {
+                bar_height = fbc_arr[i] / 3;
+                c.fillRect(bar_x, canvas.height, bar_width, - parseInt(bar_height));
+                bar_x += bar_width + 2;
+            }
+        }
+
+        //Update progress
+        function updateProgress(e){
+           const currentTime =         audio.currentTime 
+           const duration = audio.duration;
+           const perCent = (currentTime / duration) * 100;
+           
+           progress.style.width = "${perCet}%"
+        
+        }
+
+        //Set progress
+        function setProgress(e){
+            const width = this.clientWidth;
+        
+            const clickX = e.offsetX;
+        
+            var duration = audio.duration;
+        
+            audio.currentTime = (clickX / width)*duration;
+        }
+        //Event Listeners
+
+        playBtn.addEventListener('click', function (){
+            const isPlaying = container.classList.contains('play');
+            if(isPlaying){
+        
+                pauseSong();
+            
+            }else {
+            
+                playSong();
+            }
+        
+        });
+
+        prevBtn.addEventListener('click', prevSong);
+
+        nextBtn.addEventListener('click', nextSong);
+
+        
+
+        progressCon.addEventListener('click', setProgress );
+        audio.addEventListener("timeupdate",updateProgress)
+
+        audio.addEventListener('ended', nextSong);
+    });
+
+        </script>
+    </body>
+</html>
